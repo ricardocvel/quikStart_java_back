@@ -1,0 +1,65 @@
+plugins {
+	// id 'java'
+	id 'org.springframework.boot' version '2.6.8'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+allprojects {
+
+	group = "com.br"
+	version = "0.0.1-SNAPSHOT"
+
+}
+
+subprojects {
+	repositories {
+		mavenCentral()
+	}
+
+	apply plugin: "java"
+    apply plugin: "java-library"
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+		implementation 'org.hibernate:hibernate-core:5.5.7.Final'
+		implementation 'org.hibernate:hibernate-entitymanager:5.5.7.Final'
+		runtimeOnly 'com.h2database:h2'
+	}
+}
+
+project(':quickstart-controller') {
+	sourceCompatibility = '11'
+
+	apply plugin: "org.springframework.boot"
+
+	dependencies {
+		// implementation project(':quickstart-service')
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		runtimeOnly 'com.h2database:h2'
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	}
+
+	bootJar {
+		archiveBaseName.set(project.name)
+		version = project.version
+
+		launchScript()
+
+		manifest {
+			attributes("Implementation-Version": version)
+		}
+
+		if (project.hasProperty("archiveName")) {
+			archiveFileName.set(project.properties["archiveName"] as String)
+		}
+	}
+}
